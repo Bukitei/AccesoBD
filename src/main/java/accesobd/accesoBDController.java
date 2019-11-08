@@ -5,8 +5,10 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
+import Dialogs.insertDialogController;
 import conections.Mysql;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -17,13 +19,19 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.util.Pair;
 
 public class accesoBDController implements Initializable {
 
@@ -65,11 +73,14 @@ public class accesoBDController implements Initializable {
 		servers.addAll("MySQL", "SQL Server", "Access");
 		
 		tipCombx.setItems(servers);
-		tipCombx.setOnAction(evt -> onTypeAction(tipCombx.getValue().toLowerCase()));
 		
 		bdText.textProperty().bindBidirectional(bd);
 		
 		list.itemsProperty().bind(listaEstancia);
+		
+		tipCombx.setOnAction(evt -> onTypeAction());
+		conecta.setOnAction(evt -> onConnectAction());
+		insertBt.setOnAction(evt -> onInsertAction());
 		
 	}
 	
@@ -77,12 +88,12 @@ public class accesoBDController implements Initializable {
 		return view;
 	}
 	
-	private void onTypeAction(String bd) {
+	private void onTypeAction() {
 		
 		try {
 			bdText.setDisable(false);
 			conecta.setDisable(false);
-			conecta.setOnAction(evt -> onConnectAction(bd, bd.toString()));
+			
 			
 			
 			
@@ -97,13 +108,25 @@ public class accesoBDController implements Initializable {
 		
 	}
 	
-	private void onConnectAction(String type, String bd) {
+	private void onConnectAction() {
+		String type = tipCombx.getValue().toLowerCase();
 		switch(type) {
 		case "mysql":
 			try {
-				Mysql Database = new Mysql();
+				Mysql Database;
+				if(bdText.getText() != "") {
+					Database = new Mysql();
+				}else {
+					Database = new Mysql(bdText.getText());
+				}				
 				PreparedStatement lista = Database.conexion.prepareStatement("select * from estancias");
 				ResultSet resultado = lista.executeQuery();
+				listaEstancia.removeAll();
+				list.getItems().clear();
+				insertBt.setDisable(false);
+				name.setDisable(false);
+				modifyBt.setDisable(false);
+				deleteBt.setDisable(false);
 				while(resultado.next()) {
 					listEstancia.add(new Estancia(
 							resultado.getInt("codEstudiante"),
@@ -125,6 +148,17 @@ public class accesoBDController implements Initializable {
 			}
 			
 		break;
+		}
+	}
+	
+	private void onInsertAction() {
+		try {
+			
+			insertDialogController dialog = new insertDialogController();
+			Optional<Estancia> result = dialog.showAndWait();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
