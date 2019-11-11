@@ -5,10 +5,9 @@ import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
-import Dialogs.insertDialogController;
+import Dialogs.insertDialog;
 import conections.Mysql;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -19,19 +18,13 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.util.Pair;
 
 public class accesoBDController implements Initializable {
 
@@ -44,7 +37,7 @@ public class accesoBDController implements Initializable {
 	private ComboBox<String> tipCombx;
 
 	@FXML
-	private TableView<Estancia> list;
+	private TableView<Residencia> list;
 
 	@FXML
 	private TextField name, bdText;
@@ -55,15 +48,15 @@ public class accesoBDController implements Initializable {
 	// Creamos los elementos del modelo
 	
 	private StringProperty bd = new SimpleStringProperty();
-	private ObservableList<Estancia> listEstancia = FXCollections.observableArrayList();
-	private ListProperty<Estancia> listaEstancia = new SimpleListProperty<Estancia>(listEstancia);
+	private ObservableList<Residencia> listResidencia = FXCollections.observableArrayList();
+	private ListProperty<Residencia> listaResidencia = new SimpleListProperty<Residencia>(listResidencia);
 	
 
 	// constructor
 
 	public accesoBDController() throws IOException {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/accesoBDFXML.fxml"));
-		loader.setController(this); // Este ser� nuestro controlador
+		loader.setController(this); // Este será nuestro controlador
 		loader.load();
 	}
 
@@ -76,7 +69,7 @@ public class accesoBDController implements Initializable {
 		
 		bdText.textProperty().bindBidirectional(bd);
 		
-		list.itemsProperty().bind(listaEstancia);
+		list.itemsProperty().bind(listaResidencia);
 		
 		tipCombx.setOnAction(evt -> onTypeAction());
 		conecta.setOnAction(evt -> onConnectAction());
@@ -119,21 +112,21 @@ public class accesoBDController implements Initializable {
 				}else {
 					Database = new Mysql(bdText.getText());
 				}				
-				PreparedStatement lista = Database.conexion.prepareStatement("select * from estancias");
+				PreparedStatement lista = Database.conexion.prepareStatement("select * from residencias");
 				ResultSet resultado = lista.executeQuery();
-				listaEstancia.removeAll();
+				listaResidencia.removeAll();
 				list.getItems().clear();
 				insertBt.setDisable(false);
 				name.setDisable(false);
 				modifyBt.setDisable(false);
 				deleteBt.setDisable(false);
 				while(resultado.next()) {
-					listEstancia.add(new Estancia(
-							resultado.getInt("codEstudiante"),
+					listResidencia.add(new Residencia(
 							resultado.getInt("codResidencia"),
-							resultado.getDate("fechaInicio").toString(),
-							resultado.getDate("fechaFin").toString(),
-							resultado.getInt("precioPagado")
+							resultado.getString("nomResidencia"),
+							resultado.getString("codUniversidad"),
+							resultado.getInt("precioMensual"),
+							resultado.getInt("comedor")
 							)
 							);
 				}
@@ -154,8 +147,8 @@ public class accesoBDController implements Initializable {
 	private void onInsertAction() {
 		try {
 			
-			insertDialogController dialog = new insertDialogController();
-			Optional<Estancia> result = dialog.showAndWait();
+			insertDialog dialog = new insertDialog();
+			dialog.showAndWait();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

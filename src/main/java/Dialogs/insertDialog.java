@@ -1,9 +1,19 @@
 package Dialogs;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Optional;
 
+import com.sun.tools.jconsole.JConsoleContext.ConnectionState;
+
 import accesobd.Estancia;
+import conections.Mysql;
+import javafx.beans.property.ListProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
@@ -15,13 +25,14 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.TextField;
 
-public class insertDialogController extends Dialog<Estancia>{
+public class insertDialog extends Dialog<Estancia>{
 
+	//Cargamos los elementos del FXML
 	@FXML
-	private ComboBox<Integer> codEs;
+	private ComboBox<String> codEs;
 	
 	@FXML
-	private ComboBox<Integer> codRes;
+	private ComboBox<String> codRes;
 	
 	@FXML
 	private DatePicker fechaIn;
@@ -32,9 +43,15 @@ public class insertDialogController extends Dialog<Estancia>{
 	@FXML
 	private TextField precio;
 	
-	private ButtonType okButton, cancelButton;
+	//Creamos los elementos del modelo
 	
-	public insertDialogController() throws IOException {
+	private ButtonType okButton, cancelButton;
+	private Mysql conections = new Mysql();
+	
+	ObservableList<String> nomEsList = FXCollections.observableArrayList(new ArrayList<String>());
+	ObservableList<String> nomResList = FXCollections.observableArrayList(new ArrayList<String>());
+	
+	public insertDialog() throws IOException {
 		
 		setTitle("Insertar Estancia");
 		setHeaderText("Rellena los datos:");
@@ -47,7 +64,44 @@ public class insertDialogController extends Dialog<Estancia>{
 		
 		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/insertDialog.fxml"));
 		fxmlLoader.setController(this);
-		fxmlLoader.load();
+		getDialogPane().setContent(fxmlLoader.load());
+		
+		try {
+			//Obtener nombres de los estudiantes
+			PreparedStatement preparedEs = conections.conexion.prepareStatement("select nomEstudiante from estudiantes");
+			ResultSet resultadoEs = preparedEs.executeQuery();
+			
+			codEs.getItems().clear();
+			codEs.setPromptText("Estudiantes");
+			
+			while(resultadoEs.next()) {
+				nomEsList.add(resultadoEs.getString(1));			
+			}
+
+			codEs.setItems(nomEsList);
+			
+			//Obtener nombres de las residencias
+			
+			PreparedStatement preparedRes = conections.conexion.prepareStatement("select nomResidencia from residencias");
+			ResultSet resultadoRes = preparedEs.executeQuery();
+			
+			codRes.getItems().clear();
+			codRes.setPromptText("Residencias");
+			
+			while(resultadoRes.next()) {
+				nomResList.add(resultadoEs.getString(1));			
+			}
+
+			codRes.setItems(nomResList);
+			
+			
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		
 		setResultConverter(bt -> onInsertBttn());
 		

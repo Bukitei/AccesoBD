@@ -8,11 +8,10 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.control.cell.PropertyValueFactory?>
 
 <VBox id="view" fx:id="view" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -40,7 +39,7 @@
          <children>
             <VBox alignment="CENTER" prefHeight="360.0" prefWidth="810.0">
                <children>
-                  <Label text="ESTANCIAS">
+                  <Label text="RESIDENCIAS">
                      <font>
                         <Font size="19.0" />
                      </font>
@@ -48,24 +47,24 @@
                   <Separator prefWidth="200.0" />
                   <TableView id="list" fx:id="list" disable="true" prefHeight="322.0" prefWidth="800.0" VBox.vgrow="ALWAYS">
                     <columns>
-                      <TableColumn prefWidth="75.0" text="Código de estudiante" >
-                     	 	<cellValueFactory><PropertyValueFactory property="codEs" />
+                      <TableColumn prefWidth="75.0" text="Código de Residencia">
+                     	 	<cellValueFactory><PropertyValueFactory property="codRes" />
 	       				 		</cellValueFactory>
 	       				</TableColumn>
-                      <TableColumn prefWidth="75.0" text="Código de Residencia" >
-                      			<cellValueFactory><PropertyValueFactory property="codRes" />
+                      <TableColumn prefWidth="75.0" text="Nombre de Residencia">
+                      			<cellValueFactory><PropertyValueFactory property="nomRes" />
 	       				 			</cellValueFactory>
 	       				 </TableColumn>
-                        <TableColumn prefWidth="75.0" text="Fecha Inicio" >
-                        		<cellValueFactory><PropertyValueFactory property="fechaIn" />
+                        <TableColumn prefWidth="75.0" text="Universidad">
+                        		<cellValueFactory><PropertyValueFactory property="nomUni" />
 	       				 			</cellValueFactory>
 	       				 </TableColumn>
-                        <TableColumn prefWidth="75.0" text="Fecha fin" >
-                        		<cellValueFactory><PropertyValueFactory property="fechaFn" />
-	       				 			</cellValueFactory>
-	       				 </TableColumn>
-                        <TableColumn prefWidth="75.0" text="Precio pagado" >
+                        <TableColumn prefWidth="75.0" text="Precio Mensual">
                         		<cellValueFactory><PropertyValueFactory property="precio" />
+	       				 			</cellValueFactory>
+	       				 </TableColumn>
+                        <TableColumn prefWidth="75.0" text="Comedor">
+                        		<cellValueFactory><PropertyValueFactory property="comedorS" />
 	       				 			</cellValueFactory>
 	       				 	</TableColumn>
                     </columns>
