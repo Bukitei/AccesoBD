@@ -1,5 +1,9 @@
 package Dialogs;
 
+import java.awt.Checkbox;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,6 +16,8 @@ import com.sun.tools.jconsole.JConsoleContext.ConnectionState;
 import accesobd.Estancia;
 import conections.Mysql;
 import javafx.beans.property.ListProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -23,33 +29,36 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.util.converter.NumberStringConverter;
+import models.insertDialogModel;
 
 public class insertDialog extends Dialog<Estancia>{
 
 	//Cargamos los elementos del FXML
 	@FXML
-	private ComboBox<String> codEs;
+	private TextField resi;
 	
 	@FXML
-	private ComboBox<String> codRes;
-	
-	@FXML
-	private DatePicker fechaIn;
-	
-	@FXML
-	private DatePicker fechaFn;
+	private ComboBox<String> uni;
 	
 	@FXML
 	private TextField precio;
+	
+	@FXML
+	private Checkbox comedor;
+	
+	@FXML
+	private Label fallo;
 	
 	//Creamos los elementos del modelo
 	
 	private ButtonType okButton, cancelButton;
 	private Mysql conections = new Mysql();
 	
-	ObservableList<String> nomEsList = FXCollections.observableArrayList(new ArrayList<String>());
-	ObservableList<String> nomResList = FXCollections.observableArrayList(new ArrayList<String>());
+	ObservableList<String> nomUniList = FXCollections.observableArrayList(new ArrayList<String>());
+	insertDialogModel model = new insertDialogModel();
 	
 	public insertDialog() throws IOException {
 		
@@ -67,35 +76,36 @@ public class insertDialog extends Dialog<Estancia>{
 		getDialogPane().setContent(fxmlLoader.load());
 		
 		try {
-			//Obtener nombres de los estudiantes
-			PreparedStatement preparedEs = conections.conexion.prepareStatement("select nomEstudiante from estudiantes");
-			ResultSet resultadoEs = preparedEs.executeQuery();
 			
-			codEs.getItems().clear();
-			codEs.setPromptText("Estudiantes");
+			//Obtener nombres de las Universidades
+			PreparedStatement preparedUni = conections.conexion.prepareStatement("select nomUniversidad from universidades");
+			ResultSet resultadoUni = preparedUni.executeQuery();
 			
-			while(resultadoEs.next()) {
-				nomEsList.add(resultadoEs.getString(1));			
+			uni.getItems().clear();
+			uni.setPromptText("Residencias");
+			
+			while(resultadoUni.next()) {
+				nomUniList.add(resultadoUni.getString(1));			
 			}
 
-			codEs.setItems(nomEsList);
+			uni.setItems(nomUniList);
 			
-			//Obtener nombres de las residencias
+			resi.textProperty().bindBidirectional(model.nombreProperty());
+			precio.textProperty().bindBidirectional(model.precioProperty());
 			
-			PreparedStatement preparedRes = conections.conexion.prepareStatement("select nomResidencia from residencias");
-			ResultSet resultadoRes = preparedEs.executeQuery();
-			
-			codRes.getItems().clear();
-			codRes.setPromptText("Residencias");
-			
-			while(resultadoRes.next()) {
-				nomResList.add(resultadoEs.getString(1));			
-			}
+			model.precioProperty().addListener(new ChangeListener<String>() {
 
-			codRes.setItems(nomResList);
-			
-			
-			
+				@Override
+				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+					if(Integer.parseInt(model.getPrecio()) < 900 ){
+						fallo.setText("El precio no puede ser menor a 900");
+						getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+					}else {
+						getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+					}
+					
+				}
+			});
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -103,12 +113,22 @@ public class insertDialog extends Dialog<Estancia>{
 		}
 		
 		
-		setResultConverter(bt -> onInsertBttn());
-		
+		setResultConverter(bt -> { 
+			
+			if( bt.getButtonData() == ButtonData.OK_DONE ) 
+			{onInsertBttn(ButtonData.OK_DONE);}
+			
+			else
+			{ return null;
+			}
+			return null;
+		});
 		
 	}
 	
-	private Estancia onInsertBttn(){
+	
+	private Estancia onInsertBttn(ButtonData data){
+		
 		Alert confirmation = new Alert(AlertType.CONFIRMATION);
 		confirmation.setTitle("CONFIRMACION");
 		confirmation.setHeaderText("¿Seguro que quieres insertar esta estancia?");

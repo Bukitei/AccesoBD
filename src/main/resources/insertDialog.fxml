@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -12,34 +13,36 @@
    <children>
       <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="400.0">
          <children>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
-               <children>
-                  <Label text="Nombre de Estudiante" />
-                  <ComboBox id="codEs" fx:id="codEs" prefWidth="150.0" />
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
+            <HBox alignment="CENTER" prefHeight="99.0" prefWidth="400.0" spacing="50.0">
                <children>
                   <Label text="Nombre de Residencia" />
-                  <ComboBox id="codRes" fx:id="codRes" prefWidth="150.0" />
+                  <TextField id="resi" fx:id="resi" />
                </children>
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
                <children>
-                  <Label text="Fecha de Inicio" />
-                  <DatePicker id="fechaIn" fx:id="fechaIn" />
+                  <Label text="Universidad" />
+                  <ComboBox id="uni" fx:id="uni" prefWidth="150.0" />
                </children>
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
                <children>
-                  <Label text="Fecha de final" />
-                  <DatePicker id="fechaFn" fx:id="fechaFn" />
+                  <Label text="Precio Mensual" />
+                  <VBox alignment="CENTER" prefHeight="100.0" prefWidth="148.0" spacing="2.0">
+                     <children>
+                        <TextField id="precio" fx:id="precio" />
+                        <Label id="fallo" fx:id="fallo" textFill="#fc0000" />
+                     </children>
+                     <padding>
+                        <Insets top="15.0" />
+                     </padding>
+                  </VBox>
                </children>
             </HBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
                <children>
-                  <Label text="Precio pagado" />
-                  <TextField id="precio" fx:id="precio" />
+                  <Label text="Comedor" />
+                  <CheckBox id="comedor" fx:id="comedor" mnemonicParsing="false" />
                </children>
             </HBox>
          </children>
