@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 import Dialogs.insertDialog;
+import conections.Access;
 import conections.Mysql;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -107,7 +108,7 @@ public class accesoBDController implements Initializable {
 		case "mysql":
 			try {
 				Mysql Database;
-				if(bdText.getText() != "") {
+				if(bdText.getText() == null || bdText.getText() == "") {
 					Database = new Mysql();
 				}else {
 					Database = new Mysql(bdText.getText());
@@ -134,13 +135,49 @@ public class accesoBDController implements Initializable {
 			} catch (SQLException e) {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("ERROR");
-				alert.setHeaderText("Algo falló en la consulta");
-				alert.setContentText("Consulta con Borja para más información");
+				alert.setHeaderText("La base de datos es incorrecta");
+				alert.setContentText("Asegúrese de que escribió bien el nombre de la base de datos.");
 
 				alert.showAndWait();
 			}
 			
 		break;
+		
+		case "access":
+			try {
+				Access Database;
+				if(bdText.getText() == null || bdText.getText() == "") {
+					Database = new Access();
+				}else {
+					Database = new Access(bdText.getText());
+				}				
+				PreparedStatement lista = Database.conexion.prepareStatement("select * from residencias");
+				ResultSet resultado = lista.executeQuery();
+				listaResidencia.removeAll();
+				list.getItems().clear();
+				insertBt.setDisable(false);
+				name.setDisable(false);
+				modifyBt.setDisable(false);
+				deleteBt.setDisable(false);
+				while(resultado.next()) {
+					listResidencia.add(new Residencia(
+							resultado.getInt("codResidencia"),
+							resultado.getString("nomResidencia"),
+							resultado.getString("codUniversidad"),
+							resultado.getInt("precioMensual"),
+							resultado.getInt("comedor")
+							)
+							);
+				}
+				list.setDisable(false);
+			} catch (SQLException e) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setTitle("ERROR");
+				alert.setHeaderText("La base de datos es incorrecta");
+				alert.setContentText("Asegúrese de que escribió bien el nombre de la base de datos.");
+
+				alert.showAndWait();
+			}
 		}
 	}
 	

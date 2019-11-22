@@ -1,6 +1,8 @@
 package models;
 
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -9,6 +11,7 @@ public class insertDialogModel {
 	//modelos de los property con los que trabajaremos en el diálogo
 	StringProperty nombre = new SimpleStringProperty();
 	StringProperty precio = new SimpleStringProperty();
+	BooleanProperty comedor = new SimpleBooleanProperty();
 	public final StringProperty nombreProperty() {
 		return this.nombre;
 	}

@@ -1,37 +1,26 @@
 package Dialogs;
 
 import java.awt.Checkbox;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Optional;
-
-import com.sun.tools.jconsole.JConsoleContext.ConnectionState;
 
 import accesobd.Estancia;
 import conections.Mysql;
-import javafx.beans.property.ListProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.util.converter.NumberStringConverter;
 import models.insertDialogModel;
 
 public class insertDialog extends Dialog<Estancia>{
@@ -62,7 +51,7 @@ public class insertDialog extends Dialog<Estancia>{
 	
 	public insertDialog() throws IOException {
 		
-		setTitle("Insertar Estancia");
+		setTitle("Insertar Residencia");
 		setHeaderText("Rellena los datos:");
 		setContentText("Rellene todos los datos para insertar");
 		
@@ -92,6 +81,7 @@ public class insertDialog extends Dialog<Estancia>{
 			
 			resi.textProperty().bindBidirectional(model.nombreProperty());
 			precio.textProperty().bindBidirectional(model.precioProperty());
+			
 			
 			model.precioProperty().addListener(new ChangeListener<String>() {
 
@@ -129,7 +119,7 @@ public class insertDialog extends Dialog<Estancia>{
 	
 	private Estancia onInsertBttn(ButtonData data){
 		
-		Alert confirmation = new Alert(AlertType.CONFIRMATION);
+		/*Alert confirmation = new Alert(AlertType.CONFIRMATION);
 		confirmation.setTitle("CONFIRMACION");
 		confirmation.setHeaderText("¿Seguro que quieres insertar esta estancia?");
 		confirmation.setContentText("Datos: \n Estudiante: "+codEs.getValue()+"\n Residencia: "+codRes.getValue()+"\n Fecha de Inicio: "+fechaIn.getValue().toString()+"\n Fecha de Final: "+fechaFn.getValue().toString()+"\n Precio Pagado: "+precio.getText());
@@ -139,7 +129,7 @@ public class insertDialog extends Dialog<Estancia>{
 		    // ... user chose OK
 		} else {
 		    // ... user chose CANCEL or closed the dialog
-		}
+		}*/
 		
 		return null;
 	}
