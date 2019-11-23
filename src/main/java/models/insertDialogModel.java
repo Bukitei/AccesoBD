@@ -12,6 +12,7 @@ public class insertDialogModel {
 	StringProperty nombre = new SimpleStringProperty();
 	StringProperty precio = new SimpleStringProperty();
 	BooleanProperty comedor = new SimpleBooleanProperty();
+       
 	public final StringProperty nombreProperty() {
 		return this.nombre;
 	}

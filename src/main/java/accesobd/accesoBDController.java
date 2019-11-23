@@ -14,6 +14,7 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -52,6 +53,7 @@ public class accesoBDController implements Initializable {
 	private ObservableList<Residencia> listResidencia = FXCollections.observableArrayList();
 	private ListProperty<Residencia> listaResidencia = new SimpleListProperty<Residencia>(listResidencia);
 	
+        private Estancia selected;
 
 	// constructor
 
@@ -71,6 +73,12 @@ public class accesoBDController implements Initializable {
 		bdText.textProperty().bindBidirectional(bd);
 		
 		list.itemsProperty().bind(listaResidencia);
+                
+                list.getSelectionModel().selectedItemProperty().addListener((ob, ol, n) -> {
+                    if(n != null){
+                        name.setText(list.getSelectionModel().getSelectedItem().getNomRes());
+                    }
+                });
 		
 		tipCombx.setOnAction(evt -> onTypeAction());
 		conecta.setOnAction(evt -> onConnectAction());
@@ -132,6 +140,7 @@ public class accesoBDController implements Initializable {
 							);
 				}
 				list.setDisable(false);
+                                Database.conexion.close();
 			} catch (SQLException e) {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("ERROR");
@@ -170,6 +179,7 @@ public class accesoBDController implements Initializable {
 							);
 				}
 				list.setDisable(false);
+                                Database.conexion.close();
 			} catch (SQLException e) {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("ERROR");
@@ -183,13 +193,14 @@ public class accesoBDController implements Initializable {
 	
 	private void onInsertAction() {
 		try {
-			
-			insertDialog dialog = new insertDialog();
+			String type = tipCombx.getValue().toLowerCase();
+                        insertDialog dialog = new insertDialog(listaResidencia.get(listaResidencia.size()-1).getCodRes(), type);
 			dialog.showAndWait();
+                        onConnectAction();
+                        
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
 }
