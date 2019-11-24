@@ -40,6 +40,17 @@
 			<artifactId>ucanaccess</artifactId>
 			<version>4.0.4</version>
 		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
+		<dependency>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>mssql-jdbc</artifactId>
+			<version>7.0.0.jre10</version>
+			<scope>test</scope>
+		</dependency>
+
+
 	</dependencies>
 
 </project>

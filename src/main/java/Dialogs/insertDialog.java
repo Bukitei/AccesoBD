@@ -164,7 +164,7 @@ public class insertDialog extends Dialog<Estancia>{
 		Optional<ButtonType> result = confirmation.showAndWait();
 		if (result.get() == ButtonType.OK){
 		   try {
-                    if(type == "mysql"){
+                    if(type.equals("mysql")){
                         Mysql database = new Mysql();
                         
                         PreparedStatement rUni = database.conexion.prepareStatement("select codUniversidad from universidades where nomUniversidad = (?)");
@@ -175,16 +175,17 @@ public class insertDialog extends Dialog<Estancia>{
                     }
                     if(proc == 0){
 	
-                        PreparedStatement prep = database.conexion.prepareStatement("insert into residencias (codResidencia, nomResidencia, codUniversidad, precioMensual, comedor) values ((?), (?), (?), (?), (?))");
-                        prep.setString(1, "10");
-                        prep.setString(2, resi.getText());
-                        prep.setString(3, codUni);
-                        prep.setString(4, precio.getText());
-                        prep.setInt(5, comedorValue);
+                        PreparedStatement prep = database.conexion.prepareStatement("insert into residencias (nomResidencia, codUniversidad, precioMensual, comedor) values ((?), (?), (?), (?))");
+                        
+                        prep.setString(1, resi.getText());
+                        prep.setString(2, codUni);
+                        prep.setString(3, precio.getText());
+                        prep.setInt(4, comedorValue);
                         prep.executeUpdate();			
         
                      } else {
                         CallableStatement call = database.conexion.prepareCall("call ap_resiInsert (?,?,?,?,?,?)");
+                        
                         call.setString(1, resi.getText());
                         call.setString(2, codUni);
                         call.setInt(3, Integer.parseInt(precio.getText()));
@@ -208,11 +209,11 @@ public class insertDialog extends Dialog<Estancia>{
                        
                         System.out.println("¿Existe la universidad?"+uniExist+"\n ¿Se ha insertado correctamente la residencia?"+resiInsert);
                     
+                        database.conexion.close();
                      }
-                   
-                database.conexion.close();
-             }else{
-                     Access database = new Access();
+                    }else{
+                        procedure.setDisable(true);
+                        Access database = new Access();
                         
                         PreparedStatement rUni = database.conexion.prepareStatement("select codUniversidad from universidades where nomUniversidad = (?)");
                     rUni.setString(1, uni.getValue());
@@ -220,53 +221,27 @@ public class insertDialog extends Dialog<Estancia>{
                     while(codUnir.next()){
                         codUni = codUnir.getString("codUniversidad");
                     }
-                    if(proc == 0){
-	
-                        PreparedStatement prep = database.conexion.prepareStatement("insert into residencias (codResidencia, nomResidencia, codUniversidad, precioMensual, comedor) values ((?), (?), (?), (?), (?))");
-                        prep.setString(1, "10");
-                        prep.setString(2, resi.getText());
-                        prep.setString(3, codUni);
-                        prep.setString(4, precio.getText());
-                        prep.setInt(5, comedorValue);
-                        prep.executeUpdate();			
-        
-                     } else {
-                        CallableStatement call = database.conexion.prepareCall("call ap_resiInsert (?,?,?,?,?,?)");
-                        call.setString(1, resi.getText());
-                        call.setString(2, codUni);
-                        call.setInt(3, Integer.parseInt(precio.getText()));
-                        call.setBoolean(4, comedor.isSelected());
-                        call.registerOutParameter(5, java.sql.Types.INTEGER);
-                        call.registerOutParameter(6, java.sql.Types.INTEGER);
-                        
-                        call.execute();
-                        
-                        if(call.getInt(5) == 1){
-                            uniExist = "Si";
-                        }else{
-                            uniExist = "No";
-                        }
-                        
-                        if(call.getInt(6) == 1){
-                            resiInsert = "Si";
-                        }else{
-                            resiInsert = "No";
-                        }
-                       
-                        System.out.println("¿Existe la universidad?"+uniExist+"\n ¿Se ha insertado correctamente la residencia?"+resiInsert);
                     
-                     }
-                   
-                database.conexion.close();   
+	
+                        PreparedStatement prep = database.conexion.prepareStatement("insert into residencias ([nomResidencia], [codUniversidad], [precioMensual], [comedor]) values ((?), (?), (?), (?))");
+                        
+                        prep.setString(1, resi.getText());
+                        prep.setString(2, codUni);
+                        prep.setInt(3, Integer.parseInt(precio.getText()));
+                        prep.setBoolean(4, comedor.isSelected());
+                        prep.executeUpdate();			
+                    
+                        database.conexion.close();
                     }
+                   
 		} catch (SQLException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
 		}
-		
+            }
 	}
               
-   }
+   
 
     private void onProcedureAction() {
         if(procedure.isSelected()){
@@ -279,5 +254,4 @@ public class insertDialog extends Dialog<Estancia>{
             proc = 0;
         }
     }
-	
 }
