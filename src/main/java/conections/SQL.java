@@ -14,7 +14,7 @@ public Connection conexion;
 	public SQL() {
 		try {
 			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-			conexion = DriverManager.getConnection("jdbc:sqlserver://localhost;database=bdResidenciasEscolares","sa","sa");
+			conexion = DriverManager.getConnection("jdbc:sqlserver://localhost;database=bdResidenciasEscolares","Bukitei","admin");
 		} catch (ClassNotFoundException e) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("ERROR");
@@ -25,8 +25,8 @@ public Connection conexion;
 		} catch (SQLException e) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setTitle("ERROR");
-			alert.setHeaderText("Algo falló en la consulta");
-			alert.setContentText("Consulta con Borja para más información");
+			alert.setHeaderText("Error en la conexión");
+			alert.setContentText("Comprueba que la base de datos existe");
 
 			alert.showAndWait();
 		}

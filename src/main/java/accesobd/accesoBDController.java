@@ -48,12 +48,10 @@ public class accesoBDController implements Initializable {
 	private Button insertBt, modifyBt, deleteBt, conecta;
 
 	// Creamos los elementos del modelo
-	
+
 	private StringProperty bd = new SimpleStringProperty();
 	private ObservableList<Residencia> listResidencia = FXCollections.observableArrayList();
 	private ListProperty<Residencia> listaResidencia = new SimpleListProperty<Residencia>(listResidencia);
-	
-        private Estancia selected;
 
 	// constructor
 
@@ -64,43 +62,40 @@ public class accesoBDController implements Initializable {
 	}
 
 	public void initialize(URL location, ResourceBundle resources) {
-			
+
 		ObservableList<String> servers = FXCollections.observableArrayList();
 		servers.addAll("MySQL", "SQL Server", "Access");
-		
+
 		tipCombx.setItems(servers);
-		
+
 		bdText.textProperty().bindBidirectional(bd);
-		
+
 		list.itemsProperty().bind(listaResidencia);
-                
-                list.getSelectionModel().selectedItemProperty().addListener((ob, ol, n) -> {
-                    if(n != null){
-                        name.setText(list.getSelectionModel().getSelectedItem().getNomRes());
-                    }
-                });
-		
+
+		list.getSelectionModel().selectedItemProperty().addListener((ob, ol, n) -> {
+			if (n != null) {
+				name.setText(list.getSelectionModel().getSelectedItem().getNomRes());
+			}
+		});
+
 		tipCombx.setOnAction(evt -> onTypeAction());
 		conecta.setOnAction(evt -> onConnectAction());
 		insertBt.setOnAction(evt -> onInsertAction());
-                deleteBt.setOnAction(evt -> onDeleteAction());
-		
+		deleteBt.setOnAction(evt -> onDeleteAction());
+
 	}
-	
+
 	public VBox getView() {
 		return view;
 	}
-	
+
 	private void onTypeAction() {
-		
+
 		try {
 			bdText.setDisable(false);
 			conecta.setDisable(false);
-			
-			
-			
-			
-		}catch (Exception e) {
+
+		} catch (Exception e) {
 			Alert errorDriver = new Alert(AlertType.ERROR);
 			errorDriver.setTitle("ERROR");
 			errorDriver.setHeaderText("No se ha encontrado el driver");
@@ -108,20 +103,20 @@ public class accesoBDController implements Initializable {
 
 			errorDriver.showAndWait();
 		}
-		
+
 	}
-	
+
 	private void onConnectAction() {
 		String type = tipCombx.getValue().toLowerCase();
-		switch(type) {
+		switch (type) {
 		case "mysql":
 			try {
 				Mysql Database;
-				if(bdText.getText() == null || bdText.getText() == "") {
+				if (bdText.getText() == null || bdText.getText() == "") {
 					Database = new Mysql();
-				}else {
+				} else {
 					Database = new Mysql(bdText.getText());
-				}				
+				}
 				PreparedStatement lista = Database.conexion.prepareStatement("select * from residencias");
 				ResultSet resultado = lista.executeQuery();
 				listaResidencia.removeAll();
@@ -130,18 +125,13 @@ public class accesoBDController implements Initializable {
 				name.setDisable(false);
 				modifyBt.setDisable(false);
 				deleteBt.setDisable(false);
-				while(resultado.next()) {
-					listResidencia.add(new Residencia(
-							resultado.getInt("codResidencia"),
-							resultado.getString("nomResidencia"),
-							resultado.getString("codUniversidad"),
-							resultado.getInt("precioMensual"),
-							resultado.getInt("comedor")
-							)
-							);
+				while (resultado.next()) {
+					listResidencia.add(new Residencia(resultado.getInt("codResidencia"),
+							resultado.getString("nomResidencia"), resultado.getString("codUniversidad"),
+							resultado.getInt("precioMensual"), resultado.getInt("comedor")));
 				}
 				list.setDisable(false);
-                                Database.conexion.close();
+				Database.conexion.close();
 			} catch (SQLException e) {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("ERROR");
@@ -150,17 +140,17 @@ public class accesoBDController implements Initializable {
 
 				alert.showAndWait();
 			}
-			
-		break;
-		
+
+			break;
+
 		case "access":
 			try {
 				Access Database;
-				if(bdText.getText() == null || bdText.getText() == "") {
+				if (bdText.getText() == null || bdText.getText() == "") {
 					Database = new Access();
-				}else {
+				} else {
 					Database = new Access(bdText.getText());
-				}				
+				}
 				PreparedStatement lista = Database.conexion.prepareStatement("select * from residencias");
 				ResultSet resultado = lista.executeQuery();
 				listaResidencia.removeAll();
@@ -169,18 +159,15 @@ public class accesoBDController implements Initializable {
 				name.setDisable(false);
 				modifyBt.setDisable(false);
 				deleteBt.setDisable(false);
-				while(resultado.next()) {
-					listResidencia.add(new Residencia(
-							resultado.getInt("codResidencia"),
-							resultado.getString("nomResidencia"),
+				while (resultado.next()) {
+					listResidencia.add(new Residencia(resultado.getInt("codResidencia"),
+							resultado.getString("nomResidencia"), 
 							resultado.getString("codUniversidad"),
-							resultado.getInt("precioMensual"),
-							resultado.getInt("comedor")
-							)
-							);
+							resultado.getInt("precioMensual"), 
+							resultado.getInt("comedor")));
 				}
 				list.setDisable(false);
-                                Database.conexion.close();
+				Database.conexion.close();
 			} catch (SQLException e) {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("ERROR");
@@ -189,16 +176,16 @@ public class accesoBDController implements Initializable {
 
 				alert.showAndWait();
 			}
-                    break;
-                    
-                case "sql server":
-                    try{
-                    SQL Database;
-				if(bdText.getText() == null || bdText.getText() == "") {
+			break;
+
+		case "sql server":
+			try {
+				SQL Database;
+				if (bdText.getText() == null || bdText.getText() == "") {
 					Database = new SQL();
-				}else {
+				} else {
 					Database = new SQL(bdText.getText());
-				}				
+				}
 				PreparedStatement lista = Database.conexion.prepareStatement("select * from residencias");
 				ResultSet resultado = lista.executeQuery();
 				listaResidencia.removeAll();
@@ -207,18 +194,16 @@ public class accesoBDController implements Initializable {
 				name.setDisable(false);
 				modifyBt.setDisable(false);
 				deleteBt.setDisable(false);
-				while(resultado.next()) {
-					listResidencia.add(new Residencia(
-							resultado.getInt("codResidencia"),
-							resultado.getString("nomResidencia"),
+				while (resultado.next()) {
+					listResidencia.add(new Residencia(resultado.getInt("codResidencia"),
+							resultado.getString("nomResidencia"), 
 							resultado.getString("codUniversidad"),
-							resultado.getInt("precioMensual"),
+							resultado.getInt("precioMensual"), 
 							resultado.getInt("comedor")
-							)
-							);
+							));
 				}
 				list.setDisable(false);
-                                Database.conexion.close();
+				Database.conexion.close();
 			} catch (SQLException e) {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setTitle("ERROR");
@@ -227,61 +212,78 @@ public class accesoBDController implements Initializable {
 
 				alert.showAndWait();
 			}
-                 break;
+			break;
 		}
 	}
-	
+
 	private void onInsertAction() {
 		try {
 			String type = tipCombx.getValue().toLowerCase();
-                        insertDialog dialog = new insertDialog(listaResidencia.get(listaResidencia.size()-1).getCodRes(), type);
+			insertDialog dialog = new insertDialog(listaResidencia.get(listaResidencia.size() - 1).getCodRes(), type);
 			dialog.showAndWait();
-                        onConnectAction();
-                        
+			onConnectAction();
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-                
-                
+
 	}
-        
-        private void onDeleteAction(){
-            String type = tipCombx.getValue().toLowerCase();
-            switch(type){
-                case "mysql":
-                    
-				try {
-					Mysql database = new Mysql();
-                    PreparedStatement delete = database.conexion.prepareStatement("delete from residencias where nomResidencia = (?)");
-                    delete.setString(1, name.getText());
-                    delete.executeUpdate();
-                    database.conexion.close();
-                    onConnectAction();
-				} catch (SQLException e) {
-					Alert confirm = new Alert(AlertType.ERROR);
-                                        confirm.setTitle("ERROR");
-                                        confirm.setHeaderText("La residencia no existe");
-                                        confirm.setContentText("Asegúrese de que la escribió correctamente.");
-                                        
-				}
-                        
-                break;
-                case "access":
-                    try {
-					Access database = new Access();
-                    PreparedStatement delete = database.conexion.prepareStatement("delete from residencias where nomResidencia = (?)");
-                    delete.setString(1, name.getText());
-                    delete.executeUpdate();
-                    database.conexion.close();
-                    onConnectAction();
-				} catch (SQLException e) {
-					Alert confirm = new Alert(AlertType.ERROR);
-                                        confirm.setTitle("ERROR");
-                                        confirm.setHeaderText("La residencia no existe");
-                                        confirm.setContentText("Asegúrese de que la escribió correctamente.");
-				}
-                break;    
-            }
-        }
+
+	private void onDeleteAction() {
+		String type = tipCombx.getValue().toLowerCase();
+		switch (type) {
+		case "mysql":
+
+			try {
+				Mysql database = new Mysql();
+				PreparedStatement delete = database.conexion
+						.prepareStatement("delete from residencias where nomResidencia = (?)");
+				delete.setString(1, name.getText());
+				delete.executeUpdate();
+				database.conexion.close();
+				onConnectAction();
+			} catch (SQLException e) {
+				Alert confirm = new Alert(AlertType.ERROR);
+				confirm.setTitle("ERROR");
+				confirm.setHeaderText("La residencia no existe");
+				confirm.setContentText("Asegúrese de que la escribió correctamente.");
+
+			}
+
+			break;
+		case "access":
+			try {
+				Access database = new Access();
+				PreparedStatement delete = database.conexion
+						.prepareStatement("delete from residencias where nomResidencia = (?)");
+				delete.setString(1, name.getText());
+				delete.executeUpdate();
+				database.conexion.close();
+				onConnectAction();
+			} catch (SQLException e) {
+				Alert confirm = new Alert(AlertType.ERROR);
+				confirm.setTitle("ERROR");
+				confirm.setHeaderText("La residencia no existe");
+				confirm.setContentText("Asegúrese de que la escribió correctamente.");
+			}
+			break;
+		case "sql server":
+			try {
+				SQL database = new SQL();
+				PreparedStatement delete = database.conexion
+						.prepareStatement("delete from residencias where nomResidencia = (?)");
+				delete.setString(1, name.getText());
+				delete.executeUpdate();
+				database.conexion.close();
+				onConnectAction();
+			} catch (SQLException e) {
+				Alert confirm = new Alert(AlertType.ERROR);
+				confirm.setTitle("ERROR");
+				confirm.setHeaderText("La residencia no existe");
+				confirm.setContentText("Asegúrese de que la escribió correctamente.");
+			}
+		break;
+		}
+	}
 }
