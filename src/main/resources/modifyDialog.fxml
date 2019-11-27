@@ -18,7 +18,7 @@
       <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
          <children>
             <Label text="Universidad" />
-            <ComboBox fx:id="uni" prefWidth="150.0" />
+            <ComboBox fx:id="uni" prefHeight="25.0" prefWidth="182.0" />
          </children>
       </HBox>
       <HBox alignment="CENTER" prefHeight="97.0" prefWidth="400.0" spacing="50.0">
