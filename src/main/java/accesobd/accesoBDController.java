@@ -1,6 +1,7 @@
 package accesobd;
 
 import Dialogs.insertDialog;
+import Dialogs.modifyDialog;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.PreparedStatement;
@@ -82,6 +83,7 @@ public class accesoBDController implements Initializable {
 		conecta.setOnAction(evt -> onConnectAction());
 		insertBt.setOnAction(evt -> onInsertAction());
 		deleteBt.setOnAction(evt -> onDeleteAction());
+                modifyBt.setOnAction(evt -> onModifyActtion());
 
 	}
 
@@ -219,7 +221,7 @@ public class accesoBDController implements Initializable {
 	private void onInsertAction() {
 		try {
 			String type = tipCombx.getValue().toLowerCase();
-			insertDialog dialog = new insertDialog(listaResidencia.get(listaResidencia.size() - 1).getCodRes(), type);
+			insertDialog dialog = new insertDialog(type);
 			dialog.showAndWait();
 			onConnectAction();
 
@@ -286,4 +288,38 @@ public class accesoBDController implements Initializable {
 		break;
 		}
 	}
+
+    private void onModifyActtion() {
+        Residencia submited = null;
+        
+        for(int i = 0; i < listResidencia.size(); i++){
+            if(listResidencia.get(i).getNomRes().equals(name.getText())){
+                submited = listResidencia.get(i);
+            }
+        }
+        System.out.println(listResidencia.size());
+        
+        if(submited != null){
+            try {
+			String type = tipCombx.getValue().toLowerCase();
+			modifyDialog dialog = new modifyDialog(submited, type);
+			dialog.showAndWait();
+			onConnectAction();
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        }else{
+                Alert error = new Alert(AlertType.ERROR);
+                error.setTitle("ERROR");
+                error.setHeaderText("Algo está mal");
+                error.setContentText("Asegúrate de que has puesto bien el nombre de la residencia.");
+                
+                error.showAndWait();
+            }
+         
+    }
+        
+        
 }

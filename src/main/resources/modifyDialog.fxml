@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
+         <children>
+            <Label text="Nombre de la Residencia" />
+            <TextField fx:id="resi" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
+         <children>
+            <Label text="Universidad" />
+            <ComboBox fx:id="uni" prefWidth="150.0" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="97.0" prefWidth="400.0" spacing="50.0">
+         <children>
+            <Label text="Precio Mensual" />
+            <VBox alignment="CENTER" prefHeight="73.0" prefWidth="146.0">
+               <children>
+                  <TextField fx:id="precio" />
+                  <Label fx:id="fallo" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="50.0">
+         <children>
+            <Label text="Comedor" />
+            <CheckBox fx:id="comedor" mnemonicParsing="false" />
+         </children>
+      </HBox>
+   </children>
+</VBox>
