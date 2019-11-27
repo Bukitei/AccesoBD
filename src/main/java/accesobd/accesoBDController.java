@@ -1,5 +1,9 @@
 package accesobd;
 
+/**
+ * @author Borja David Gómez Alayón
+ */
+
 import Dialogs.insertDialog;
 import Dialogs.modifyDialog;
 import java.io.IOException;
@@ -12,6 +16,7 @@ import java.util.ResourceBundle;
 import conections.Access;
 import conections.SQL;
 import conections.Mysql;
+import java.util.Optional;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -24,6 +29,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -64,21 +70,22 @@ public class accesoBDController implements Initializable {
 
 	public void initialize(URL location, ResourceBundle resources) {
 
+                //Establecemos los textos del ComboBox
 		ObservableList<String> servers = FXCollections.observableArrayList();
 		servers.addAll("MySQL", "SQL Server", "Access");
 
 		tipCombx.setItems(servers);
-
+                //Bindeamos con el modelo
 		bdText.textProperty().bindBidirectional(bd);
 
 		list.itemsProperty().bind(listaResidencia);
-
+                //Listener que establece el nombre de la residencia seleccionada en el TextField para ello
 		list.getSelectionModel().selectedItemProperty().addListener((ob, ol, n) -> {
 			if (n != null) {
 				name.setText(list.getSelectionModel().getSelectedItem().getNomRes());
 			}
 		});
-
+                //Establecemos que hace cada botón y el ComboBox
 		tipCombx.setOnAction(evt -> onTypeAction());
 		conecta.setOnAction(evt -> onConnectAction());
 		insertBt.setOnAction(evt -> onInsertAction());
@@ -86,11 +93,15 @@ public class accesoBDController implements Initializable {
                 modifyBt.setOnAction(evt -> onModifyActtion());
 
 	}
-
+        //Función para llamar a su vista
 	public VBox getView() {
 		return view;
 	}
-
+        /**
+         * Establecemos que cuando se seleccione algo en el ComboBox 
+         * se habiliten el TextField para escribir si quieres una base de datos
+         * específica o no
+         */
 	private void onTypeAction() {
 
 		try {
@@ -107,6 +118,8 @@ public class accesoBDController implements Initializable {
 		}
 
 	}
+        
+        //Esta función se conecta a la base de datos seleccionada
 
 	private void onConnectAction() {
 		String type = tipCombx.getValue().toLowerCase();
@@ -121,6 +134,11 @@ public class accesoBDController implements Initializable {
 				}
 				PreparedStatement lista = Database.conexion.prepareStatement("select * from residencias");
 				ResultSet resultado = lista.executeQuery();
+                                /**
+                                 * Tras conectarse y conseguir una lista de residencias, las inserta en la lista mostrada y 
+                                 * habilita el resto de opciones
+                                 */
+                                
 				listaResidencia.removeAll();
 				list.getItems().clear();
 				insertBt.setDisable(false);
@@ -217,7 +235,7 @@ public class accesoBDController implements Initializable {
 			break;
 		}
 	}
-
+        //Invoca el Diálogo de insertar
 	private void onInsertAction() {
 		try {
 			String type = tipCombx.getValue().toLowerCase();
@@ -231,9 +249,18 @@ public class accesoBDController implements Initializable {
 		}
 
 	}
-
+        //Acción al pulsar el botón borrar
 	private void onDeleteAction() {
-		String type = tipCombx.getValue().toLowerCase();
+            //Saca un diálogo de confirmación
+           Alert confirmation = new Alert(AlertType.CONFIRMATION);
+		confirmation.setTitle("CONFIRMACION");
+		confirmation.setHeaderText("¿Seguro que quieres eliminar esta estancia?");
+		confirmation.setContentText("La residencia con nombre "+name.getText()+" será eliminada.");
+                
+                //Si acepta, dependiendo de la base de datos lo hace a su modo
+                Optional<ButtonType> result = confirmation.showAndWait();
+		if (result.get() == ButtonType.OK) {
+                    String type = tipCombx.getValue().toLowerCase();
 		switch (type) {
 		case "mysql":
 
@@ -287,8 +314,10 @@ public class accesoBDController implements Initializable {
 			}
 		break;
 		}
+            }
 	}
 
+    //Invoca el diálogo modificar pasándole la residencia seleccionada
     private void onModifyActtion() {
         Residencia submited = null;
         
@@ -297,7 +326,6 @@ public class accesoBDController implements Initializable {
                 submited = listResidencia.get(i);
             }
         }
-        System.out.println(listResidencia.size());
         
         if(submited != null){
             try {

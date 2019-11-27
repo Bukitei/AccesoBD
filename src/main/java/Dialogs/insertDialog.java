@@ -1,5 +1,9 @@
 package Dialogs;
 
+/**
+ * @author Borja David Gómez Alayón
+ */
+
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -64,6 +68,7 @@ public class insertDialog extends Dialog<Estancia> {
 	ObservableList<String> nomUniList = FXCollections.observableArrayList(new ArrayList<String>());
 	insertDialogModel model = new insertDialogModel();
 
+        //Construimos el diálogo
 	public insertDialog(String type) throws IOException {
 
 		
@@ -72,6 +77,7 @@ public class insertDialog extends Dialog<Estancia> {
 		setHeaderText("Rellena los datos:");
 		setContentText("Rellene todos los datos para insertar");
 
+                //Establecemos los textos de los botones que por defecto son OK y Cancelar
 		okButton = new ButtonType("Insertar", ButtonData.OK_DONE);
 		cancelButton = new ButtonType("Cancelar", ButtonData.CANCEL_CLOSE);
 
@@ -96,6 +102,7 @@ public class insertDialog extends Dialog<Estancia> {
 
 			procedure.setOnAction(evt -> onProcedureAction());
 
+                        //Añadimos un listener a precio que ponga un texto en rojo si el precio es menor a 900
 			model.precioProperty().addListener(new ChangeListener<String>() {
 
 				@Override
@@ -111,7 +118,7 @@ public class insertDialog extends Dialog<Estancia> {
 			});
 
 		
-
+                 //Rellena los datos del combobox de universidades según la lista de universidades de la tabla de datos, por si son diferentes
 		switch (type) {
 		case "mysql":
 			 PreparedStatement preparedUni;
@@ -129,9 +136,9 @@ public class insertDialog extends Dialog<Estancia> {
 				
 				System.out.println("error de sql");
 			}
-			 
+			 //Le decimos que si da al botón ok, aunque el padre ejecute otra función, ejecute la siguiente
 			setResultConverter(bt -> {
-
+                                
 				if (bt.getButtonData() == ButtonData.OK_DONE) {
 					onInsertBttnMySQL(ButtonData.OK_DONE);
 				}
@@ -203,10 +210,17 @@ public class insertDialog extends Dialog<Estancia> {
 
 	}
 
+        /**
+             * 
+             * Función para insertar, las tres siguientes son iguales, sólo cambiando 
+             * algunos detalles dependiendo de la base de datos seleccionada
+             */
+        
 	private void onInsertBttnAccess(ButtonData okDone) {
 		String procedureText;
 		String comedorText;
 		int comedorValue;
+                //Establecemos el texto que se representará en el mensaje
 		if (procedure.isSelected()) {
 			procedureText = "Si";
 			proc = 1;
@@ -222,6 +236,7 @@ public class insertDialog extends Dialog<Estancia> {
 			comedorValue = 0;
 		}
 
+                //Diálogo de confirmación
 		Alert confirmation = new Alert(AlertType.CONFIRMATION);
 		confirmation.setTitle("CONFIRMACION");
 		confirmation.setHeaderText("¿Seguro que quieres insertar esta estancia?");
@@ -229,6 +244,7 @@ public class insertDialog extends Dialog<Estancia> {
 				+ resi.getText() + "\n Universidad: " + uni.getValue() + "\n Precio Mensual: " + model.getPrecio()
 				+ "\n Comedor: " + comedorText);
 
+                //Si ha seleccionado que si, saldrá lo siguiente:
 		Optional<ButtonType> result = confirmation.showAndWait();
 		if (result.get() == ButtonType.OK) {
 			try {

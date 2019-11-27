@@ -1,5 +1,9 @@
 package accesobd;
 
+/**
+ * @author Borja David Gómez Alayón
+ */
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,6 +13,8 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+
+//Antiguo objeto para la lista, no está en uso pero se mantiene para posibles usos posteriores
 
 public class Residencia {
 	

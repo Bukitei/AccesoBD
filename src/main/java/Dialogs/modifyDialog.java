@@ -1,5 +1,10 @@
 package Dialogs;
 
+/**
+ * @author Borja David Gómez Alayón
+ */
+
+
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -58,6 +63,8 @@ public class modifyDialog extends Dialog<Estancia> {
 	ObservableList<String> nomUniList = FXCollections.observableArrayList(new ArrayList<String>());
 	insertDialogModel model = new insertDialogModel();
 
+        //Construimos el diálogo
+        
 	public modifyDialog(Residencia submited, String type) throws IOException {
                 
                 this.submited = submited;
@@ -66,6 +73,7 @@ public class modifyDialog extends Dialog<Estancia> {
 		setHeaderText("Cambia los datos los datos:");
 		setContentText("Cambia todos los datos para modificar");
 
+                //Establecemos los textos de los botones que por defecto son OK y Cancelar
 		okButton = new ButtonType("Modificar", ButtonData.OK_DONE);
 		cancelButton = new ButtonType("Cancelar", ButtonData.CANCEL_CLOSE);
 
@@ -90,13 +98,15 @@ public class modifyDialog extends Dialog<Estancia> {
 			resi.textProperty().bindBidirectional(model.nombreProperty());
 			precio.textProperty().bindBidirectional(model.precioProperty());
                         
+                        //Le damos los valores de la Residencia seleccionada
+                        
                         resi.setText(submited.getNomRes());
                         precio.setText(Integer.toString(submited.getPrecio()));
                         
                         if(submited.getComedor() == 1){
                             comedor.setSelected(true);
                         }
-
+                        //Añadimos un listener a precio que ponga un texto en rojo si el precio es menor a 900
 			model.precioProperty().addListener(new ChangeListener<String>() {
 
 				@Override
@@ -112,7 +122,7 @@ public class modifyDialog extends Dialog<Estancia> {
 			});
 
 		
-
+                 //Rellena los datos del combobox de universidades según la lista de universidades de la tabla de datos, por si son diferentes
 		switch (type) {
 		case "mysql":
 			 PreparedStatement preparedUni;
@@ -158,7 +168,7 @@ public class modifyDialog extends Dialog<Estancia> {
 			} catch (SQLException e) {
 				System.out.println("error de sql");
 			}
-			
+			//Le decimos que si da al botón ok, aunque el padre ejecute otra función, ejecute la siguiente
 			setResultConverter(bt -> {
 
 				if (bt.getButtonData() == ButtonData.OK_DONE) {
@@ -201,11 +211,16 @@ public class modifyDialog extends Dialog<Estancia> {
 		}
 
 	}
-
+            /**
+             * 
+             * Función para modificar, las tres siguientes son iguales, sólo cambiando 
+             * algunos detalles dependiendo de la base de datos seleccionada
+             */
+            
 	private void onModifyBttnAccess(ButtonData okDone) {
 		String comedorText;
 		int comedorValue;
-                
+                //Establecemos el texto que se representará en el mensaje
 		if (comedor.isSelected()) {
 			comedorText = "Si";
 			comedorValue = 1;
@@ -213,22 +228,22 @@ public class modifyDialog extends Dialog<Estancia> {
 			comedorText = "No";
 			comedorValue = 0;
 		}
-
+                //Diálogo de confirmación
 		Alert confirmation = new Alert(AlertType.CONFIRMATION);
 		confirmation.setTitle("CONFIRMACION");
-		confirmation.setHeaderText("¿Seguro que quieres moficiar esta estancia?");
+		confirmation.setHeaderText("¿Seguro que quieres modificiar esta estancia?");
 		confirmation.setContentText("Antiguos valores: \n    -Nombre de la residencia: "+submited.getNomRes()+
                         "\n    -Universidad: "+submited.getNomUni()+"\n    -Precio mensual: "+submited.getPrecio()+"\n    -Comedor: "+
                         submited.getComedorS()+"\n Nuevos valores: \n    -Nombre de la residencia: "+resi.getText()+
-                        "\n    --Universidad: "+uni.getValue()+"\n    -Precio mensual: "+precio.getText()+"\n    -Comedor: "+
+                        "\n    -Universidad: "+uni.getValue()+"\n    -Precio mensual: "+precio.getText()+"\n    -Comedor: "+
                         comedorText);
-
+                //Si ha seleccionado que si, saldrá lo siguiente:
 		Optional<ButtonType> result = confirmation.showAndWait();
 		if (result.get() == ButtonType.OK) {
 			try {
 
 				Access database = new Access();
-
+                                 //Recibimos el código de la universidad dependiendo del nombre escogido
 				PreparedStatement rUni = database.conexion
 						.prepareStatement("select codUniversidad from universidades where nomUniversidad = (?)");
 				rUni.setString(1, uni.getValue());
@@ -237,7 +252,7 @@ public class modifyDialog extends Dialog<Estancia> {
 					codUni = codUnir.getString("codUniversidad");
 				}
 				
-
+                                        //Ejecutmos la modificación
 					PreparedStatement prep = database.conexion.prepareStatement(
 					"update residencias  set nomResidencia = (?), codUniversidad = (?), "
                                                 + "precioMensual = (?), comedor = (?) where codResidencia = (?)");
@@ -277,11 +292,11 @@ public class modifyDialog extends Dialog<Estancia> {
 
 		Alert confirmation = new Alert(AlertType.CONFIRMATION);
 		confirmation.setTitle("CONFIRMACION");
-		confirmation.setHeaderText("¿Seguro que quieres moficiar esta estancia?");
+		confirmation.setHeaderText("¿Seguro que quieres modificiar esta estancia?");
 		confirmation.setContentText("Antiguos valores: \n    -Nombre de la residencia: "+submited.getNomRes()+
                         "\n    -Universidad: "+submited.getNomUni()+"\n    -Precio mensual: "+submited.getPrecio()+"\n    -Comedor: "+
                         submited.getComedorS()+"\n Nuevos valores: \n    -Nombre de la residencia: "+resi.getText()+
-                        "\n    --Universidad: "+uni.getValue()+"\n    -Precio mensual: "+precio.getText()+"\n    -Comedor: "+
+                        "\n    -Universidad: "+uni.getValue()+"\n    -Precio mensual: "+precio.getText()+"\n    -Comedor: "+
                         comedorText);
 
 		Optional<ButtonType> result = confirmation.showAndWait();
@@ -335,11 +350,11 @@ public class modifyDialog extends Dialog<Estancia> {
 
 		Alert confirmation = new Alert(AlertType.CONFIRMATION);
 		confirmation.setTitle("CONFIRMACION");
-		confirmation.setHeaderText("¿Seguro que quieres moficiar esta estancia?");
+		confirmation.setHeaderText("¿Seguro que quieres modificiar esta estancia?");
 		confirmation.setContentText("Antiguos valores: \n    -Nombre de la residencia: "+submited.getNomRes()+
                         "\n    -Universidad: "+submited.getNomUni()+"\n    -Precio mensual: "+submited.getPrecio()+"\n    -Comedor: "+
                         submited.getComedorS()+"\n Nuevos valores: \n    -Nombre de la residencia: "+resi.getText()+
-                        "\n    --Universidad: "+uni.getValue()+"\n    -Precio mensual: "+precio.getText()+"\n    -Comedor: "+
+                        "\n    -Universidad: "+uni.getValue()+"\n    -Precio mensual: "+precio.getText()+"\n    -Comedor: "+
                         comedorText);
 
 		Optional<ButtonType> result = confirmation.showAndWait();

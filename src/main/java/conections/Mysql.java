@@ -1,5 +1,9 @@
 package conections;
 
+/**
+ * @author Borja David Gómez Alayón
+ */
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -8,6 +12,7 @@ import java.sql.SQLException;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
+//Conexión con MySQL
 public class Mysql {
 
 	public Connection conexion;

@@ -1,10 +1,15 @@
 package accesobd;
 
+/**
+ * @author Borja David Gómez Alayón
+ */
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+
+//Creamos el objeto estancia
 public class Estancia {
 
 	private IntegerProperty codEs, codRes, precio;
